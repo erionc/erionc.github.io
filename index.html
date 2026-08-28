@@ -10,9 +10,139 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> <!-- added this cause 4.7 was not showing icons -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css"> <!-- for more icons -->
 <style>
+:root {
+  color-scheme: light dark;
+  --page-bg: #f1f1f1;
+  --surface-bg: #ffffff;
+  --text: #111111;
+  --muted-text: #757575;
+  --link: #3f51b5;
+  --border: #dddddd;
+  --nav-bg: #3f51b5;
+  --nav-text: #ffffff;
+  --button-bg: #ffffff;
+  --button-text: #3f51b5;
+  --button-hover-bg: #3f51b5;
+  --button-hover-text: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --page-bg: #121212;
+    --surface-bg: #1e1e1e;
+    --text: #e8e8e8;
+    --muted-text: #b0b0b0;
+    --link: #9aa8ff;
+    --border: #444444;
+    --nav-bg: #303f9f;
+    --nav-text: #ffffff;
+    --button-bg: #252525;
+    --button-text: #b7c0ff;
+    --button-hover-bg: #3f51b5;
+    --button-hover-text: #ffffff;
+  }
+}
+
+:root[data-theme="light"] {
+  --page-bg: #f1f1f1;
+  --surface-bg: #ffffff;
+  --text: #111111;
+  --muted-text: #757575;
+  --link: #3f51b5;
+  --border: #dddddd;
+  --nav-bg: #3f51b5;
+  --nav-text: #ffffff;
+  --button-bg: #ffffff;
+  --button-text: #3f51b5;
+  --button-hover-bg: #3f51b5;
+  --button-hover-text: #ffffff;
+}
+
+:root[data-theme="dark"] {
+  --page-bg: #121212;
+  --surface-bg: #1e1e1e;
+  --text: #e8e8e8;
+  --muted-text: #b0b0b0;
+  --link: #9aa8ff;
+  --border: #444444;
+  --nav-bg: #303f9f;
+  --nav-text: #ffffff;
+  --button-bg: #252525;
+  --button-text: #b7c0ff;
+  --button-hover-bg: #3f51b5;
+  --button-hover-text: #ffffff;
+}
+
 html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif, size=9}
 .atcharhere:before { content: '@'; }
+
+body, .w3-light-grey {
+  background-color: var(--page-bg) !important;
+  color: var(--text) !important;
+}
+
+.w3-white {
+  background-color: var(--surface-bg) !important;
+  color: var(--text) !important;
+}
+
+.w3-text-black { color: var(--text) !important; }
+.w3-text-grey { color: var(--muted-text) !important; }
+.w3-text-indigo { color: var(--link) !important; }
+
+a { color: var(--link); }
+
+.w3-indigo {
+  background-color: var(--nav-bg) !important;
+  color: var(--nav-text) !important;
+}
+
+.w3-ul li {
+  border-bottom-color: var(--border) !important;
+}
+
+a.w3-button.w3-white {
+  background-color: var(--button-bg) !important;
+  color: var(--button-text) !important;
+}
+
+a.w3-button.w3-white:hover,
+.w3-hover-indigo:hover {
+  background-color: var(--button-hover-bg) !important;
+  color: var(--button-hover-text) !important;
+}
+
+#theme-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1000;
+  width: 46px;
+  height: 46px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: var(--surface-bg);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 21px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+}
+
+#theme-toggle:hover { transform: scale(1.06); }
+#theme-toggle:focus-visible { outline: 2px solid var(--link); outline-offset: 3px; }
+
+body, .w3-white, .w3-light-grey, .w3-indigo, a, #theme-toggle {
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
 </style>
+<script>
+  (function () {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+  })();
+</script>
 
 <body class="w3-light-grey">
 
@@ -412,6 +542,40 @@ html,body,h1,h2,h3,h4,h5,h6 {font-family: "Roboto", sans-serif, size=9}
 <a href="https://www.hitwebcounter.com" target="_blank">
 <img src="https://hitwebcounter.com/counter/counter.php?page=7951804&style=0007&nbdigits=8&type=page&initCount=0" title="Free Counter" Alt="web counter"   border="0" /></a> 
 -->   
+
+
+<button id="theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">🌙</button>
+<script>
+  (function () {
+    const root = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+
+    function effectiveTheme() {
+      return root.getAttribute('data-theme') || (media.matches ? 'dark' : 'light');
+    }
+
+    function updateButton() {
+      const dark = effectiveTheme() === 'dark';
+      toggle.textContent = dark ? '☀️' : '🌙';
+      toggle.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+      toggle.setAttribute('title', dark ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+
+    toggle.addEventListener('click', function () {
+      const next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+      updateButton();
+    });
+
+    media.addEventListener('change', function () {
+      if (!root.hasAttribute('data-theme')) updateButton();
+    });
+
+    updateButton();
+  })();
+</script>
 
 </body>
 </html>
